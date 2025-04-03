@@ -3,7 +3,7 @@ import { fastifyCors } from "@fastify/cors";
 import {
   validatorCompiler,
   serializerCompiler,
-  ZodTypeProvider,
+  type ZodTypeProvider,
   jsonSchemaTransform
 } from "fastify-type-provider-zod";
 import { fastifySwagger } from "@fastify/swagger";
