@@ -1,0 +1,17 @@
+services:
+  connect-pg: 
+    image: bitnami/postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=tatyanepgoncalves
+      - POSTGRES_PASSWORD=event
+      - POSTGRES_DB=event
+
+
+  connect-redis:
+    image: bitnami/redis
+    ports:
+      - "6379:6379"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
