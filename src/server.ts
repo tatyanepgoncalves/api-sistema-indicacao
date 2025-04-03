@@ -1,11 +1,14 @@
-import fastify from "fastify";
-import fastifyCors from "@fastify/cors";
+import { fastify } from "fastify";
+import { fastifyCors } from "@fastify/cors";
 import {
   validatorCompiler,
   serializerCompiler,
   ZodTypeProvider,
+  jsonSchemaTransform
 } from "fastify-type-provider-zod";
-import { z } from "zod";
+import { fastifySwagger } from "@fastify/swagger";
+import { fastifySwaggerUi } from "@fastify/swagger-ui";
+import { createSubscriptionsRoute } from "./routes/createSubscriptionsRoute"
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 
@@ -16,31 +19,23 @@ app.register(fastifyCors, {
   origin: "http://localhost:5173",
 });
 
-app.post(
-  "/subscriptions",
-  {
-    schema: {
-      body: z.object({
-        name: z.string(),
-        email: z.string().email(),
-      }),
-      response: {
-        201: z.object({
-          name: z.string(),
-          email: z.string(),
-        }),
-      }
+app.register(fastifySwagger, {
+  openapi: {
+    info: {
+      title: "API",
+      version: "0.0.1",
+      description: "API information"
     },
   },
-  async (request, reply) => {
-    const { name, email } = request.body;
+  transform: jsonSchemaTransform,
+})
 
-    return reply.status(201).send({ 
-      name, 
-      email 
-    });
-  }
-);
+app.register(fastifySwaggerUi, {
+  routePrefix: "/docs"
+})
+
+app.register(createSubscriptionsRoute)
+
 
 app.listen({ port: 3333 }).then(() => {
   console.log("🚀 HTTP server is running!");
